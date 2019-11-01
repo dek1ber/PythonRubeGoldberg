@@ -10,7 +10,6 @@ import os
 description = """
 ---- Newton's Cradle ----
 A screensaver version of Newton's Cradle with an interactive mode
-
 /s - Run in fullscreen screensaver mode
 /p #### - Display a preview of the screensaver using a window handler
 /i - Interactive mode
@@ -22,22 +21,13 @@ A screensaver version of Newton's Cradle with an interactive mode
 
 is_interactive = False
 display_flags = 0
-# if sys.argv[1] == "/p":  # preview mode
-#     os.environ['SDL_VIDEODRIVER'] = 'windib'
-#     os.environ['SDL_WINDOWID'] = sys.argv[2]
-#     display_size = (100, 100)
-#     is_interactive = False
 
-### We must set OS env before the pygame imports..
 import pygame
 from pygame.locals import *
 from pygame.color import *
+import pymunk.pygame_util
 
-# if sys.argv[1] == "/s":  # fullscreen screensaver mode
-#     display_size = (0, 0)
-#     is_interactive = False
-#     display_flags = display_flags | FULLSCREEN  # FULLSCREEN) # | DOUBLEBUF | HWSURFACE     )
-# elif sys.argv[1] == "/i":  # interactive
+
 display_size = (600, 600)
 is_interactive = True
 
@@ -56,7 +46,7 @@ def drawcircle(image, colour, origin, radius, width=0):
         if int(radius - (width / 2)) > 0:
             pygame.draw.circle(circle, [0, 0, 0, 0], [circle.get_width() / 2, circle.get_height() / 2],
                                abs(int(radius - (width / 2))))
-        image.blit(circle, [origin[0] - (circle.get_width() / 2), origin[1] - (circle.get_height() / 2)])
+        # image.blit(circle, [origin[0] - (circle.get_width() / 2), origin[1] - (circle.get_height() / 2)])
 
 
 def reset_bodies(space):
@@ -95,12 +85,15 @@ def main():
     space.gravity = (0.0, -1900.0)
     space.damping = 0.999  # to prevent it from blowing up.
     mouse_body = pm.Body(body_type=pm.Body.KINEMATIC)
+    # static_body = pymunk.Space().static_body
     static_body = pm.Body(body_type=pm.Body.STATIC)
-    static_body.position=(0,0)
-    static_lines = [pymunk.Segment(static_body, (200, 200), (500, 200), 2.0),
-                    pymunk.Segment(static_body, (408, 100), (600, 343.0), 2.0),
-                    pymunk.Segment(static_body, (450, 75), (200, 343.0), 2.0),
-                    pymunk.Segment(static_body, (470, 50), (300, 343.0), 2.0)]
+    static_body.position=(300,300)
+    static_lines = [
+                    pymunk.Segment(static_body, (50, -250), (250, -50), 2.0)
+                    # pymunk.Segment(static_body, (408, 100), (600, 343.0), 2.0),
+                    # pymunk.Segment(static_body, (450, 75), (200, 343.0), 2.0),
+                    # pymunk.Segment(static_body, (470, 50), (300, 343.0), 2.0)
+                    ]
     for line in static_lines:
         line.elasticity = 0.6
         line.friction = 0.9
@@ -116,13 +109,12 @@ def main():
         body.position = (x, -125 + offset_y)
         body.start_position = Vec2d(body.position)
         shape = pm.Circle(body, radius)
-        shape.elasticity = 0.9999999
+        shape.elasticity = .99999
         space.add(body, shape)
         bodies.append(body)
         pj = pm.PinJoint(space.static_body, body, (x, 125 + offset_y), (0, 0))
         space.add(pj)
-
-    reset_bodies(space)
+        reset_bodies(space)
     selected = None
     while running:
         for event in pygame.event.get():
@@ -172,7 +164,7 @@ def main():
         mouse_body.position = p
 
         ### Clear screen
-        screen.fill(THECOLORS["white"])
+        screen.fill(THECOLORS["black"])
 
         ### Draw stuff
         for c in space.constraints:
@@ -185,7 +177,8 @@ def main():
         for ball in space.shapes:
             p = to_pygame(ball.body.position)
             drawcircle(screen, ball.color, p, int(ball.radius), 0)
-            # pygame.draw.circle(screen, ball.color, p, int(ball.radius), 0)
+
+        # pygame.draw.lines(screen, THECOLORS["red"], False, [p1, p2])
 
         ### Update physics
         fps = 50
@@ -194,17 +187,8 @@ def main():
         for x in range(iterations):  # 10 iterations to get a more stable simulation
             space.step(dt)
 
-        ### Flip screen
-        # if is_interactive:
-        #     screen.blit(font.render("fps: " + str(clock.get_fps()), 1, THECOLORS["white"]), (0, 0))
-        #     screen.blit(font.render("Press left mouse button and drag to interact", 1, THECOLORS["darkgrey"]),
-        #                 (5, height - 35))
-        #     screen.blit(font.render("Press R to reset, any other key to quit", 1, THECOLORS["darkgrey"]),
-        #                 (5, height - 20))
-
-        # screen.fill((255, 255, 255))
-        #
-        # space.step(1 / 50.0)  # 3
+        draw_options = pm.pygame_util.DrawOptions(screen)
+        space.debug_draw(draw_options)
 
         pygame.display.flip()
         clock.tick(fps)
