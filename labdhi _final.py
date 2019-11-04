@@ -61,16 +61,16 @@ class PhysicsDemo:
            # for x in range(1, y):
            x = 0
            s = 10  # the reason for the bottom line is the when we divide 50/4 it truncates, but for 50/5 it is a good number
-           p = Vec2d( (y * s * 1.5 ) + (20/y)/5, 25) + Vec2d(250, 20 + 40/y)
+           p = Vec2d( (y * s * 1.5 ) + (20/y)/5 - 75, 25) + Vec2d(250- 75, 20 + 40/y)
            self.polys.append(self.create_box(p, size=10/y, mass=5))
 
-       p = Vec2d((100 * 2) -40 , 20) + Vec2d(80, 80)
+       p = Vec2d((100 * 2) -40 - 75 , 20) + Vec2d(80 - 75, 80)
        self.polys.append(self.create_box(p, size=12, mass=5))
 
-       p1 = Vec2d((100 * 2)-40, 20+50) + Vec2d(80, 80 +40)
+       p1 = Vec2d((100 * 2)-40 - 75, 20+50) + Vec2d(80 - 75, 80 +40)
        self.polys.append(self.create_box(p1, size=12, mass=5))
 
-       p2 = Vec2d(5, 750)
+       p2 = Vec2d(5, 795)
 
 
        # self.balls.append(self.create_ball(p2, .5, 7.0))
@@ -79,7 +79,7 @@ class PhysicsDemo:
        moment = pm.moment_for_circle(1, 0.0, 7)
        ball_body = pm.Body(3, moment)
        ball_body.position = Vec2d(p2)
-       ball_body.mass = 1
+       ball_body.mass = 5
 
        ball_shape = pm.Circle(ball_body, 7)
        ball_shape.friction = 1.5
@@ -88,7 +88,7 @@ class PhysicsDemo:
        self.space.add(ball_body, ball_shape)
        self.balls.append(ball_shape)
 
-       p2 = Vec2d(250, 160)
+       p2 = Vec2d(250 - 150, 160)
        # self.balls.append(self.create_ball(p2, .5, 7.0))
        #
        # p2 = Vec2d(400, 650)
@@ -105,7 +105,7 @@ class PhysicsDemo:
        self.balls.append(ball_shape)
 
        #  ramp # 2
-       points = [(430, 50), (600, 80)]
+       points = [(430 - 150, 50), (600 - 75, 100)]
        points = list(map(Vec2d, points))
        for i in range(len(points) - 1):
            v1 = Vec2d(points[i].x - 50, points[i].y)
@@ -118,7 +118,7 @@ class PhysicsDemo:
            self.walls.append(wall_shape)
 
        # ramp # 1
-       points = [(50, 720), (600, 690)]
+       points = [(50, 780), (600, 690)]
        points = list(map(Vec2d, points))
        for i in range(len(points) - 1):
            v1 = Vec2d(points[i].x - 50, points[i].y)
@@ -130,21 +130,9 @@ class PhysicsDemo:
            self.space.add(wall_shape)
            self.walls.append(wall_shape)
 
-           # ramp # 1.5
-           points = [(120, 550), (100, 470)]
-           points = list(map(Vec2d, points))
-           for i in range(len(points) - 1):
-               v1 = Vec2d(points[i].x - 50, points[i].y)
-               v2 = Vec2d(points[i + 1].x + 100, points[i + 1].y)
-               wall_body = pm.Body(body_type=pm.Body.STATIC)
-               wall_shape = pm.Segment(wall_body, v1, v2, .0)
-               wall_shape.friction = 7
-               wall_shape.collision_type = COLLTYPE_DEFAULT
-               self.space.add(wall_shape)
-               self.walls.append(wall_shape)
 
                # ramp # 1.9
-           points = [(50, 720-120), (600, 690-120)]
+           points = [(50, 600), (450, 570)]
            points = list(map(Vec2d, points))
            for i in range(len(points) - 1):
                v1 = Vec2d(points[i].x - 50, points[i].y)
@@ -156,7 +144,50 @@ class PhysicsDemo:
                self.space.add(wall_shape)
                self.walls.append(wall_shape)
 
-       points = [(299, 155), (300, 200)]
+
+       #         second ramp barrier
+
+       points = [(800, 670), (650, 695)]
+       points = list(map(Vec2d, points))
+       for i in range(len(points) - 1):
+           v1 = Vec2d(points[i].x - 50, points[i].y)
+           v2 = Vec2d(points[i + 1].x + 100, points[i + 1].y)
+           wall_body = pm.Body(body_type=pm.Body.STATIC)
+           wall_shape = pm.Segment(wall_body, v1, v2, .0)
+           wall_shape.friction = 7
+           wall_shape.collision_type = COLLTYPE_DEFAULT
+           self.space.add(wall_shape)
+           self.walls.append(wall_shape)
+
+
+
+       #         third ramp barrier
+
+       points = [(800-700, 670-75), (650-700, 695-75)]
+       points = list(map(Vec2d, points))
+       for i in range(len(points) - 1):
+           v1 = Vec2d(points[i].x - 50, points[i].y)
+           v2 = Vec2d(points[i + 1].x + 100, points[i + 1].y)
+           wall_body = pm.Body(body_type=pm.Body.STATIC)
+           wall_shape = pm.Segment(wall_body, v1, v2, .0)
+           wall_shape.friction = 7
+           wall_shape.collision_type = COLLTYPE_DEFAULT
+           self.space.add(wall_shape)
+           self.walls.append(wall_shape)
+
+       points = [(800, 675), (40, 620)]
+       points = list(map(Vec2d, points))
+       for i in range(len(points) - 1):
+               v1 = Vec2d(points[i].x - 50, points[i].y)
+               v2 = Vec2d(points[i + 1].x + 100, points[i + 1].y)
+               wall_body = pm.Body(body_type=pm.Body.STATIC)
+               wall_shape = pm.Segment(wall_body, v1, v2, .0)
+               wall_shape.friction = 7
+               wall_shape.collision_type = COLLTYPE_DEFAULT
+               self.space.add(wall_shape)
+               self.walls.append(wall_shape)
+
+       points = [(299 - 150, 155), (300 - 150, 200)]
        points = list(map(Vec2d, points))
        for i in range(len(points) - 1):
            v1 = Vec2d(points[i].x - 50, points[i].y)
@@ -168,6 +199,8 @@ class PhysicsDemo:
            wall_shape.collision_type = COLLTYPE_DEFAULT
            self.space.add(wall_shape)
            self.walls.append(wall_shape)
+
+
 
 
        # Kevin's Part
@@ -366,7 +399,7 @@ class PhysicsDemo:
        self.clock.tick(50)
        pygame.display.set_caption("fps: " + str(self.clock.get_fps()))
 
-   def add_L(self, space):
+   def add_L1(self, space):
        """Add a inverted L shape with two joints"""
        change_x = 300
        rotation_center_body = pm.Body(body_type=pm.Body.STATIC)
@@ -406,9 +439,41 @@ class PhysicsDemo:
                  rotation_limit_joint)
        return l8
 
+   def add_L(self, space):
+       """Add a inverted L shape with two joints"""
+       change_x = 75
+       rotation_center_body = pm.Body(body_type=pm.Body.STATIC)
+       rotation_center_body.position = (300, 300)
+
+       rotation_limit_body = pm.Body(body_type=pm.Body.STATIC)
+       rotation_limit_body.position = (300, 300)
+
+       staticbody = pm.Body(body_type=pm.Body.STATIC)
+       staticbody.position = (300, 300)
+
+       body6 = pm.Body(1, 10000)
+       body6.position = (300, 300)
+       change_y = 25
+       l1 = pm.Segment(staticbody, (25 + change_x, -20 + change_y), (25 + change_x, 200.0 + change_y - 100), 1.0)
+       l2 = pm.Segment(staticbody, (-25 + change_x, -20 + change_y), (-25 + change_x, 200.0 + change_y-100), 1.0)
+       l3 = pm.Segment(staticbody, (25 + change_x, -20 + change_y), (85.0 + change_x-30, -90.0 + change_y), 1.3)
+       l4 = pm.Segment(staticbody, (-25 + change_x, -20 + change_y), (-85.0 + change_x+30, -90.0 + change_y), 1.3)
+       l8 = pm.Segment(body6, (-35 + change_x, -150 + change_y), (75 + change_x, -150 + change_y), 5.0)
+       joint_limit = 0
+       rotation_limit_joint = pymunk.SlideJoint(body6, rotation_limit_body, (-2 + change_x, -150 + change_y),
+                                                (0 + change_x, -150 + change_y), 0, 1)
+       rotation_center_joint = pymunk.PinJoint(body6, rotation_center_body, (25 + change_x-5, -50-75), (25 + change_x-5, -50-75))
+
+       space.add(l1, l2, l3, l4, l8, rotation_limit_body, rotation_center_body, body6, staticbody,
+                 rotation_center_joint,
+                 # rotation_limit_joint
+                 )
+       return l8
+
    def add_L_pulley(self, space):
 
-       change_x = 150
+       change_x = 175
+
 
        rotation_center_body = pm.Body(body_type=pm.Body.STATIC)
        rotation_center_body.position = (300+change_x, 300)
@@ -419,7 +484,7 @@ class PhysicsDemo:
        body1 = pm.Body(1+change_x, 10000)
        body1.position = (300+change_x, 300)
        l1 = pm.Segment(body1, (-100+change_x, 125), (100.0+change_x, 125.0), 1)
-       l2 = pm.Segment(body1, (100.0+change_x, 125), (100.0+change_x, 150.0), 1)
+       l2 = pm.Segment(body1, (100.0+change_x, 125), (100.0+change_x, 200.0), 1)
 
        rotation_center_joint = pm.PinJoint(body1, rotation_center_body, (0, 25), (0, 25))
        joint_limit = 200
